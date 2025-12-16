@@ -88,6 +88,10 @@ After cleaning and normalizing raw marketing events, a user-level funnel analysi
 - marketing_sql_python.ipynb - full analysis notebook
 - README.md - project summary and insights
 
+### Future Work
+- Analyze transactional order data for revenue integrity
+- Join funnel events to orders for post-conversion analysis
+
 
 
 
