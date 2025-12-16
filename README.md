@@ -1,44 +1,52 @@
-# 📊 Marketing Funnel Analysis (SQL + Python)
+# 📊 Marketing Funnel & Orders Analysis (SQL + Python)
 ### Overview
-This project demonstrates how to audit, clean, and analyze messy marketing event data using SQL inside a Python notebook, followed by user-level funnel analysis and conversion metrics.
+This project demonstrates how to audit, clean, and analyze messy marketing and transactional data using SQL inside Python notebooks.
 
-The focus is on data quality, metric correctness, and business reasoning.
+It is split into two focused analyses:
+
+	1.	Marketing event funnel analysis (behavioral metrics)
+	2.	Orders and revenue analysis (transactional integrity)
+
+The emphasis throughout is on data quality, metric correctness, and business reasoning.
 
 ### Problem Statement
 
-Raw marketing event logs are often noisy and inconsistent
+Raw analytics data is often noisy and inconsistent across both event and transaction layers:
 - Event names vary in casing and spelling
 - Timestamps contain invalid or missing values
-- Multiple events per user inflate naive metrics
+- Multiple events per user inflate naïve metrics
+- Transactional fields mix text, symbols, and currencies
 
-The goal of this project was to:
+Without careful auditing and cleaning, derived metrics such as conversion rates or revenue can be misleading.
 
-1. Audit and clean raw event data
-2. Normalize event types into a coherent funnel
-3. Build a user-level funnel (not event-level)
-4. Compute and interpret conversion rates
+### Project Structure
+This repository contains two complementary notebooks, each scoped to a specific business question:
 
-### Data Scope & Assumptions
+	1.	Marketing Funnel Analysis (marketing_sql_python.ipynb)
+    - Focuses on user behavior and conversion through the funnel.
+	2.	Orders & Revenue Analysis (orders_analysis.ipynb)
+    - Focuses on transaction validity and revenue metrics after cleaning.
 
-This analysis focuses exclusively on marketing event data (`events_raw`) to construct a user-level funnel.
-
-Although an `orders_raw` table is available, it was intentionally excluded to:
-- Avoid mixing event-level and transactional logic
-- Keep funnel metrics user-centric rather than revenue-centric
-- Ensure conversion rates reflect behavior, not order artifacts
-
-Order data would be more appropriate for a separate revenue or LTV-focused analysis.
-
-This setup mirrors common real-world analytics challenges.
+This separation mirrors real-world analytics workflows and avoids mixing behavioral and financial logic.
 
 ### Dataset
-The dataset consists of synthetic but realistic marketing events:
+The project uses synthetic but realistic data designed to reflect common analytics challenges.
+
+##### Marketing Events
 - Page views, signups, cart actions, checkout, purchases, refunds
 - Inconsistent event naming (e.g. pageview, PageView, pv)
 - Mixed timestamp formats and invalid values
 - Multiple events per user
 
-### Approach
+##### Orders
+- Mixed-format monetary values (e.g. AED 70.41, US$ 128.85, free)
+- Inconsistent currency representations
+- Non-standardized order statuses
+- Missing identifiers and currency attribution
+
+### Analysis 1: Marketing Funnel Analysis
+
+#### Approach
 
 ##### 1. Data Auditing
 Using SQL inside a Jupyter notebook (via DuckDB), I audited:
@@ -74,26 +82,35 @@ From 450 unique users:
 
 Conversion rates were computed in SQL for metric correctness, then visualized in Python.
 
-### Key Insight
+#### Key Insight
 After cleaning and normalizing raw marketing events, a user-level funnel analysis showed that the primary drop-off occurs after signup but before checkout initiation. This suggests that post-signup friction, such as checkout UX, pricing clarity, or user readiness, may be a stronger barrier than top-of-funnel acquisition.
+
+### Analysis 2: Orders & Revenue Analysis
+
+#### Approach
+The orders analysis focused on transactional integrity rather than behavior.
+
+Key steps included:
+- Normalizing inconsistent order statuses into a canonical paid state
+- Extracting numeric values from mixed-format monetary fields using regex
+- Standardizing currencies with fallback inference from raw amount strings
+- Flagging orders with missing currency attribution or unparseable amounts
+
+#### Key Insight
+After auditing and cleaning the raw order data, all observed orders mapped to successful payments, while approximately 26% of orders lacked explicit currency attribution. Revenue metrics were therefore computed by currency where available, reinforcing the importance of separating behavioral funnel analysis from transactional revenue reporting.
 
 ### Tools Used
 - Python
 - Pandas
 - DuckDB (SQL inside Jupyter)
-- SQL (CTEs, CASE statements, aggregation)
+- SQL (CTEs, CASE statements, regex-based cleaning)
 - Matplotlib (visualization)
 
 ### Files
-- marketing_sql_python.ipynb - full analysis notebook
+- Notebooks
+  - 01_event_audit_and_cleaning.ipynb - full analysis notebook
+  - 02_orders_analysis.ipynb - order cleaning and revenue metrics
+- Data
+  - marketing_events_raw.csv
+  - orders_raw.csv
 - README.md - project summary and insights
-
-### Future Work
-- Analyze transactional order data for revenue integrity
-- Join funnel events to orders for post-conversion analysis
-
-
-
-
-
-
