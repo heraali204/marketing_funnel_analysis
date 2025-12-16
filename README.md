@@ -18,14 +18,25 @@ The goal of this project was to:
 3. Build a user-level funnel (not event-level)
 4. Compute and interpret conversion rates
 
+### Data Scope & Assumptions
+
+This analysis focuses exclusively on marketing event data (`events_raw`) to construct a user-level funnel.
+
+Although an `orders_raw` table is available, it was intentionally excluded to:
+- Avoid mixing event-level and transactional logic
+- Keep funnel metrics user-centric rather than revenue-centric
+- Ensure conversion rates reflect behavior, not order artifacts
+
+Order data would be more appropriate for a separate revenue or LTV-focused analysis.
+
+This setup mirrors common real-world analytics challenges.
+
 ### Dataset
 The dataset consists of synthetic but realistic marketing events:
 - Page views, signups, cart actions, checkout, purchases, refunds
 - Inconsistent event naming (e.g. pageview, PageView, pv)
 - Mixed timestamp formats and invalid values
 - Multiple events per user
-
-This setup mirrors common real-world analytics challenges.
 
 ### Approach
 
